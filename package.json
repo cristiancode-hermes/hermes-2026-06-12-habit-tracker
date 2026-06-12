@@ -1,0 +1,13 @@
+{
+  "name": "hermes-habit-tracker",
+  "private": true,
+  "scripts": {
+    "web": "cd apps/web && npm start",
+    "api": "cd apps/api && npm start",
+    "build:web": "cd apps/web && npm run build",
+    "build:api": "cd apps/api && npm run build",
+    "install:all": "cd apps/web && npm install && cd ../../apps/api && npm install",
+    "test:api": "cd apps/api && npm test",
+    "test:web": "cd apps/web && npm test"
+  }
+}
