@@ -18,14 +18,24 @@ import { Insight } from './insights/insight.entity';
     }),
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (config: ConfigService) => ({
-        type: (config.get<string>('DATABASE_TYPE', 'better-sqlite3') as any),
-        database: config.get<string>('DATABASE_PATH', './data/habits.db'),
-        // For Postgres/Neon production:
-        // url: config.get<string>('DATABASE_URL'),
-        entities: [User, Habit, HabitEntry, Insight],
-        synchronize: true,
-      }),
+      useFactory: (config: ConfigService) => {
+        const dbType = config.get<string>('DATABASE_TYPE', 'better-sqlite3');
+        if (dbType === 'postgres') {
+          return {
+            type: 'postgres',
+            url: config.get<string>('DATABASE_URL'),
+            entities: [User, Habit, HabitEntry, Insight],
+            synchronize: true,
+            ssl: { rejectUnauthorized: false },
+          };
+        }
+        return {
+          type: 'better-sqlite3',
+          database: config.get<string>('DATABASE_PATH', './data/habits.db'),
+          entities: [User, Habit, HabitEntry, Insight],
+          synchronize: true,
+        };
+      },
       inject: [ConfigService],
     }),
     AuthModule,
